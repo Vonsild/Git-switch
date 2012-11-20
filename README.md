@@ -19,14 +19,12 @@ Place the script file somewhere in your PATH. I've placed mine in Git/libexec/gi
 
 Git-switch will stash local changes to your working copy (if any), check out the other branch, and - if one is found - apply, and drop, the stash matching the branch you are checking out.
 
-Basically (pseudo code): ```
-git stash save 'SWITCH-current_branch'
+Basically (pseudo code):
 
-git checkout other_branch
-
-git stash apply SWITCH-other_branch
-
-git stash drop SWITCH-other_branch```
+    git stash save 'SWITCH-current_branch'
+    git checkout other_branch
+    git stash apply SWITCH-other_branch
+    git stash drop SWITCH-other_branch
 
 only with a lot more checking and verification of valid states
 

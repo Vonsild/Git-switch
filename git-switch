@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# Written November 2012
+# Tom Vonsild <tom@vonsild.net>
+# No license, do what you like
+#
+# No warranties of any kind
+#
+# When git-switch'ing to another branch, uncommitted changes to current branch is first stashed, with a recognizable label
+# The new branch is chekced out
+# If a `switch` stash is found for the new branch, it is applied and dropped
+
+USAGE='git switch <branch name>'
+LONG_USAGE='git-switch is used for switching between branches, without losing uncommitted changes. git-switch will stash changes, checkout <branch name>, apply - and drop - applicable stash to <branch name>'
+OPTIONS_SPEC=
+
+#If no branch is specified, echo usage and exit
+if [ -z $1 ]; then
+	echo "Usage: $USAGE
+
+$LONG_USAGE"
+	exit
+fi
+
+#Include git-sh-setup
+. git-sh-setup
+#Make sure we are in a working tree
+require_work_tree_exists
+
+#Assert that the branch we're trying to switch to exists
+BRANCH_EXISTS=$(git branch -l | grep $1)
+if [ "$BRANCH_EXISTS" == "" ]; then
+	echo "No branch matching $1"
+	exit
+fi
+
+#Get the name of the current branch
+CURRENT_BRANCH=$(git symbolic-ref --short -q HEAD)
+#If we currently are in a branch, then stash changes
+if [ $CURRENT_BRANCH != "" ]; then
+	#Check if there are local changes, before attempting to stash
+	MODIFIED=$(git stash list -s | grep ^\ M)
+	if [ "$MODIFIED" != "" ]; then
+		echo "Stashing working copy"
+		git stash save "SWITCH-$CURRENT_BRANCH" > /dev/null
+	else
+		echo "No local changes to stash"
+	fi
+fi
+
+#Checkout other branch
+git checkout $1
+
+#Get the id of the last switch stash for other branch
+STASH=$(git stash list | grep "SWITCH-$1" | sed s/\}:.*/\}/)
+#If stash id was found, apply and drop it
+if [ "$STASH" != "" ]; then
+	echo "Applying $STASH to $1"
+	git stash apply $STASH > /dev/null
+	git stash drop $STASH > /dev/null
+else
+	echo "No Switch-stash found for $1"
+fi
+
+#We now have restored the state of 'other branch', to what it was when we last switched away from it

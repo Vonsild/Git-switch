@@ -21,9 +21,13 @@ Git-switch will stash local changes to your working copy (if any), check out the
 
 Basically (pseudo code): ```
 git stash save 'SWITCH-current_branch'
+
 git checkout other_branch
+
 git stash apply SWITCH-other_branch
+
 git stash drop SWITCH-other_branch```
+
 only with a lot more checking and verification of valid states
 
 ##License

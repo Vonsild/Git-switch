@@ -39,7 +39,7 @@ CURRENT_BRANCH=$(git symbolic-ref --short -q HEAD)
 #If we currently are in a branch, then stash changes
 if [ $CURRENT_BRANCH != "" ]; then
 	#Check if there are local changes, before attempting to stash
-	MODIFIED=$(git stash list -s | grep ^\ M)
+	MODIFIED=$(git status -s | grep ^\ M)
 	if [ "$MODIFIED" != "" ]; then
 		echo "Stashing working copy"
 		git stash save "SWITCH-$CURRENT_BRANCH" > /dev/null

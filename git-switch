@@ -28,7 +28,7 @@ fi
 require_work_tree_exists
 
 #Assert that the branch we're trying to switch to exists
-BRANCH_EXISTS=$(git branch -l | grep $1)
+BRANCH_EXISTS=$(git branch -l | grep ^\ *$1\$)
 if [ "$BRANCH_EXISTS" == "" ]; then
 	echo "No branch matching $1"
 	exit

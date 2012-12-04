@@ -15,6 +15,10 @@ Place the script file somewhere in your PATH. I've placed mine in Git/libexec/gi
 
     git switch other_branch
 
+To enable tab-completion of branch names, add the following line to (Linux) /etc/bash_completion.d/git or
+(Git Bash) /etc/git-completion.bash
+
+    __git_complete "git switch" _git_checkout
 ##How it works
 
 Git-switch will stash local changes to your working copy (if any), check out the other branch, and - if one is found - apply, and drop, the stash matching the branch you are checking out.
